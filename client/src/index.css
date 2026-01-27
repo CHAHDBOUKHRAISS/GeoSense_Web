@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap');
+@import 'leaflet/dist/leaflet.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Scientific/Academic Palette - Neutral Base with Semantic Accents */
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Libre Baskerville', serif;
+
+  --background: 210 20% 98%;
+  --foreground: 220 15% 15%;
+  
+  --card: 0 0% 100%;
+  --card-foreground: 220 15% 15%;
+  
+  --popover: 0 0% 100%;
+  --popover-foreground: 220 15% 15%;
+  
+  --primary: 216 30% 30%; /* Deep Slate Blue - Academic/Professional */
+  --primary-foreground: 210 40% 98%;
+  
+  --secondary: 210 10% 90%;
+  --secondary-foreground: 220 15% 15%;
+  
+  --muted: 210 20% 94%;
+  --muted-foreground: 220 10% 45%;
+  
+  --accent: 216 30% 90%;
+  --accent-foreground: 216 30% 25%;
+  
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 214 20% 85%;
+  --input: 214 20% 85%;
+  --ring: 216 30% 30%;
+
+  --radius: 0.3rem; /* Sharper corners for scientific feel */
+  
+  /* Semantic Colors for Data */
+  --color-success: 142 70% 45%;
+  --color-warning: 38 92% 50%;
+  --color-danger: 0 84% 60%;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    @apply font-bold text-slate-800 tracking-tight;
+  }
+}
+
+/* Leaflet Map Customization to match theme */
+.leaflet-container {
+  font-family: var(--font-sans);
+  z-index: 10;
+  border-radius: var(--radius);
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: var(--radius);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+/* Custom Scrollbar for high-density dashboard */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded hover:bg-slate-400 transition-colors;
+}
