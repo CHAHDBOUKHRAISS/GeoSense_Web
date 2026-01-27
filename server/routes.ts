@@ -11,7 +11,6 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
 
-  // --- Regions API ---
 
   app.get(api.regions.list.path, async (req, res) => {
     const regions = await storage.getRegions();
@@ -30,7 +29,6 @@ export async function registerRoutes(
     try {
       const input = api.regions.create.input.parse(req.body);
       
-      // Create the region
       const newRegion = await storage.createRegion({
         name: input.name,
         latitude: input.latitude,
@@ -38,7 +36,7 @@ export async function registerRoutes(
         description: input.description || `Custom region at ${input.latitude.toFixed(4)}, ${input.longitude.toFixed(4)}`,
       });
 
-      // Generate climate data for this region (30 days)
+
       await generateClimateDataForRegion(newRegion.id, input.latitude);
 
       res.status(201).json(newRegion);
@@ -53,7 +51,7 @@ export async function registerRoutes(
     }
   });
 
-  // Delete a region
+
   app.delete(api.regions.delete.path, async (req, res) => {
     const id = Number(req.params.id);
     const region = await storage.getRegion(id);
@@ -64,7 +62,7 @@ export async function registerRoutes(
     res.status(204).send();
   });
 
-  // --- Analysis Engine API ---
+
 
   app.post(api.analysis.run.path, async (req, res) => {
     try {
@@ -75,14 +73,14 @@ export async function registerRoutes(
         return res.status(404).json({ message: "Region not found" });
       }
 
-      // Fetch Data
+
       const records = await storage.getClimateRecords(input.regionId, input.startDate, input.endDate);
       
       if (records.length === 0) {
         return res.status(400).json({ message: "No climate data available for this region and time period." });
       }
 
-      // Run Reasoning Engine
+    
       const result = runReasoningEngine(region.name, records, input);
       
       res.json(result);
@@ -99,27 +97,19 @@ export async function registerRoutes(
     }
   });
 
-  // --- Seed Data ---
   await seedDatabase();
 
   return httpServer;
 }
 
-// ==========================================
-// REASONING ENGINE (Deterministic, Rule-Based)
-// ==========================================
-// MOVED TO: server/engine/climateReasoningEngine.ts
 
-
-// Generate climate data for a new region based on latitude
 async function generateClimateDataForRegion(regionId: number, latitude: number) {
   const baseDate = new Date("2023-01-01");
   
-  // Adjust base temperature based on latitude (rough approximation)
-  // Equator (~0) = hot, poles (~90) = cold
+
   const absLat = Math.abs(latitude);
-  let baseTemp = 30 - (absLat * 0.5); // Rough formula: hotter near equator
-  baseTemp = Math.max(-10, Math.min(40, baseTemp)); // Clamp between -10 and 40
+  let baseTemp = 30 - (absLat * 0.5); 
+  baseTemp = Math.max(-10, Math.min(40, baseTemp)); 
 
   for (let i = 0; i < 30; i++) {
     const date = new Date(baseDate);
@@ -143,7 +133,6 @@ async function seedDatabase() {
   const existing = await storage.countRegions();
   if (existing > 0) return;
 
-  // Create Regions
   const regionA = await storage.createRegion({
     name: "Coastal Bay Area",
     latitude: 37.7749,
@@ -165,7 +154,7 @@ async function seedDatabase() {
     description: "Coastal desert climate, famous for its bay and solar potential."
   });
 
-  // Create Climate Data (Mock 30 days)
+
   const regions = [regionA, regionB, regionC];
   const baseDate = new Date("2023-01-01");
 
@@ -175,7 +164,7 @@ async function seedDatabase() {
       date.setDate(baseDate.getDate() + i);
       const dateStr = date.toISOString().split('T')[0];
 
-      // Random variation based on region
+
       let baseTemp = 20;
       if (reg.name.includes("Valley")) baseTemp = 30;
       if (reg.name.includes("Alpine")) baseTemp = 5;
