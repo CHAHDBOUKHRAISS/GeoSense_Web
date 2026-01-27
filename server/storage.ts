@@ -5,10 +5,6 @@ import {
   type InsertClimateRecord
 } from "@shared/schema";
 
-/**
- * In-memory mock storage
- * Used for analytical reasoning without persistence
- */
 
 export interface IStorage {
   getRegions(): Promise<Region[]>;
